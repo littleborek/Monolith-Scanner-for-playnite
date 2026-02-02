@@ -1,0 +1,16 @@
+## Ignore Visual Studio temporary files, build results, and user-specific files.
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Ignore Playnite extension output
+*.pext
+
+## Ignore system files
+thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
