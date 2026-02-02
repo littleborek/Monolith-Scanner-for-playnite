@@ -37,6 +37,14 @@ Technical Details
 
         Heuristic Scoring: Validates game folders based on file signatures and excludes known non-game executables.
 
+<img width="1363" height="888" alt="2" src="https://github.com/user-attachments/assets/0fbb26ca-48d9-485b-9c8d-782f14ac8c7d" />
+
+<img width="2560" height="1439" alt="3" src="https://github.com/user-attachments/assets/19cb5263-5eb2-401b-852b-09ce209751a9" />
+
+<img width="2382" height="420" alt="4" src="https://github.com/user-attachments/assets/2f39ff3b-5dfb-42af-ad6f-34fc0755ea2e" />
+
+
+
 Disclaimer
 
 Monolith is a tool designed for organizing and managing games you legally own. The developer is not responsible for how the tool is used or the nature of the files being scanned.
