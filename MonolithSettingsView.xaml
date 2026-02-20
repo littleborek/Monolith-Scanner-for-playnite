@@ -5,15 +5,31 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
              d:DesignHeight="400" d:DesignWidth="600">
-    <StackPanel Margin="20">
-        <TextBlock Text="Game Directories (One path per line):" Margin="0,0,0,5" FontWeight="Bold"/>
-        <TextBox Text="{Binding ScanDirectoriesText}" 
-                 AcceptsReturn="True" 
-                 Height="200" 
-                 VerticalScrollBarVisibility="Auto"
-                 Margin="0,0,0,20"/>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="20">
+            <CheckBox Content="Auto-scan for new games on startup" 
+                      IsChecked="{Binding Settings.AutoScanOnStartup}" 
+                      Margin="0,0,0,15"
+                      FontWeight="Bold"/>
 
-        <TextBlock Text="Other Settings (Example):"/>
-        <CheckBox Content="Example Option 2" IsChecked="{Binding Settings.Option2}" Margin="0,5,0,0"/>
-    </StackPanel>
+            <TextBlock Text="Game Directories (One path per line):" Margin="0,0,0,5" FontWeight="Bold"/>
+            <TextBox Text="{Binding ScanDirectoriesText, UpdateSourceTrigger=PropertyChanged}" 
+                     AcceptsReturn="True" 
+                     Height="120" 
+                     VerticalScrollBarVisibility="Auto"
+                     Margin="0,0,0,20"/>
+
+            <TextBlock Text="Skip List / Blacklist (File extensions or names to ignore):" Margin="0,0,0,5" FontWeight="Bold"/>
+            <TextBox Text="{Binding SkipListText, UpdateSourceTrigger=PropertyChanged}" 
+                     AcceptsReturn="True" 
+                     Height="100" 
+                     VerticalScrollBarVisibility="Auto"
+                     Margin="0,0,0,10"/>
+            <TextBlock Text="Tips: You can add 'dxsetup.exe', '.tmp', or specific folder names here." 
+                       FontSize="10" 
+                       FontStyle="Italic" 
+                       Opacity="0.7"
+                       Margin="0,0,0,20"/>
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>

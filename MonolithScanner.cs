@@ -13,9 +13,13 @@ namespace Monolith
         private static readonly ILogger Logger = LogManager.GetLogger();
         private readonly SignatureMatcher _matcher;
 
-        public MonolithScanner()
+        public MonolithScanner(List<string> skipList = null)
         {
             _matcher = new SignatureMatcher();
+            if (skipList != null)
+            {
+                _matcher.UserSkipList = new HashSet<string>(skipList, StringComparer.OrdinalIgnoreCase);
+            }
         }
 
         public async Task<List<DiscoveredGame>> ScanDirectoryAsync(string rootPath)
@@ -34,17 +38,27 @@ namespace Monolith
             {
                 try
                 {
-                    // We will iterate ONE level deep for "game folders" typically found in a library folder.
+                    // 1. Check if the rootPath itself is a game folder
+                    // This handles cases where a user adds a specific game folder instead of a library folder
+                    ProcessDirectory(rootPath, results);
+
+                    // 2. Iterate ONE level deep for "game folders" typically found in a library folder.
                     // Assuming rootPath is like "D:\Games", we check "D:\Games\GameA", "D:\Games\GameB".
-                    
-                    // .NET Framework 4.6.2 compatible directory enumeration
                     var directories = Directory.EnumerateDirectories(rootPath, "*", SearchOption.TopDirectoryOnly);
 
                     Parallel.ForEach(directories, (dir) =>
                     {
                         try
                         {
-                            // Try processing the top-level directory
+                            // Avoid double-processing if rootPath was selected as a game
+                            if (string.Equals(Path.GetFullPath(dir).TrimEnd(Path.DirectorySeparatorChar), 
+                                              Path.GetFullPath(rootPath).TrimEnd(Path.DirectorySeparatorChar), 
+                                              StringComparison.OrdinalIgnoreCase))
+                            {
+                                return;
+                            }
+
+                            // Try processing the directory
                             bool found = ProcessDirectory(dir, results);
 
                             // If not found, try scanning one level deeper (for nested structures like Game/Game/...)

@@ -11,6 +11,10 @@ Key Features
 
     Smart Fallback: If an executable name is a cryptic abbreviation (like tlou_i.exe), it automatically pulls the title from the parent folder instead.
 
+    Auto-Scan: Optionally scans your directories for new games every time Playnite starts.
+
+    Custom Skip List: Peace of mind with a user-definable blacklist for specific files, folders, or extensions you want to ignore.
+
     Built-in Blacklist: Automatically skips system tools, DirectX folders, and updaters to keep your library clutter-free.
 
 Usage
@@ -39,7 +43,10 @@ Technical Details
 
 Disclaimer
 
-Monolith is a tool designed for organizing and managing games you legally own. The developer is not responsible for how the tool is used or the nature of the files being scanned.
+Monolith is a tool designed for organizing and managing games you legally own. The developer is not responsible for how the tool is used or the nature of the files being scanned. This project has been developed with AI assistance from Antigravity.
 License
 
 MIT License. Feel free to fork and improve!
+
+---
+**Author:** Berk Kocabörek ([littleborek](https://github.com/littleborek))

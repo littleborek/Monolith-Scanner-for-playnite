@@ -30,7 +30,7 @@ namespace Monolith
         public override IEnumerable<GameMetadata> GetGames(LibraryGetGamesArgs args)
         {
             var games = new List<GameMetadata>();
-            var scanner = new MonolithScanner();
+            var scanner = new MonolithScanner(settings.Settings.SkipList);
             
             logger.Info("Monolith GetGames started.");
             

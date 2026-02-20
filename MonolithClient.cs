@@ -13,7 +13,7 @@ namespace Monolith
 
         public override void Open()
         {
-            throw new NotImplementedException();
+            // No client to open for Monolith
         }
     }
 }

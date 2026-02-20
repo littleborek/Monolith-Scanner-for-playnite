@@ -1,0 +1,15 @@
+# Monolith Release Package
+
+To create the final Playnite extension file (.pext):
+
+1. Make sure you have the Playnite Toolbox (Toolbox.exe) which comes with the Playnite SDK.
+2. Run the following command in this directory:
+   `Toolbox.exe pack . "C:\Output\Monolith.pext"`
+
+Alternatively, for manual installation/testing, copy these to %AppData%\Playnite\Extensions\0846f275-5dcd-4ab4-8f93-267a098f2189:
+
+- bin\Release\Monolith.dll
+- extension.yaml
+- icon.png
+- README.md
+- Localization\ (Entire folder)

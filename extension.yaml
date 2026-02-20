@@ -1,7 +1,6 @@
-﻿Id: Monolith_3f8a... (Toolbox tarafından oluşturulan ID'yi değiştirme)
+﻿Id: 0846f275-5dcd-4ab4-8f93-267a098f2189
 Name: Monolith
-Author: YourName
-Version: 0.1.0
+Author: Berk Kocabörek (littleborek)
+Version: 1.0.1
 Module: Monolith.dll
-Type: Library
-Icon: icon.png
+Type: GameLibrary

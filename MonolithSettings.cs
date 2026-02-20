@@ -12,17 +12,19 @@ namespace Monolith
     {
         private string option1 = string.Empty;
         private bool option2 = false;
-        private bool optionThatWontBeSaved = false;
+        private bool autoScanOnStartup = true;
         private List<string> scanDirectories = new List<string>();
+        private List<string> skipList = new List<string>();
 
         public string Option1 { get => option1; set => SetValue(ref option1, value); }
         public bool Option2 { get => option2; set => SetValue(ref option2, value); }
+        public bool AutoScanOnStartup { get => autoScanOnStartup; set => SetValue(ref autoScanOnStartup, value); }
         public List<string> ScanDirectories { get => scanDirectories; set => SetValue(ref scanDirectories, value); }
+        public List<string> SkipList { get => skipList; set => SetValue(ref skipList, value); }
 
         // Playnite serializes settings object to a JSON object and saves it as text file.
         // If you want to exclude some property from being saved then use `JsonDontSerialize` ignore attribute.
-        [DontSerialize]
-        public bool OptionThatWontBeSaved { get => optionThatWontBeSaved; set => SetValue(ref optionThatWontBeSaved, value); }
+
     }
 
     public class MonolithSettingsViewModel : ObservableObject, ISettings
@@ -75,6 +77,20 @@ namespace Monolith
             }
         }
 
+        public string SkipListText
+        {
+            get => string.Join(Environment.NewLine, Settings.SkipList);
+            set
+            {
+                Settings.SkipList = value
+                    .Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(s => s.Trim())
+                    .Where(s => !string.IsNullOrWhiteSpace(s))
+                    .ToList();
+                OnPropertyChanged();
+            }
+        }
+
         public void BeginEdit()
         {
             // Code executed when settings view is opened and user starts editing values.
@@ -88,6 +104,7 @@ namespace Monolith
             Settings = editingClone;
             // Notify UI that the text property has also changed (reverted)
             OnPropertyChanged(nameof(ScanDirectoriesText));
+            OnPropertyChanged(nameof(SkipListText));
         }
 
         public void EndEdit()

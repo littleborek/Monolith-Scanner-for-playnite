@@ -42,6 +42,8 @@ namespace Monolith
             "System Volume Information", "Windows", "Program Files", "Program Files (x86)"
         };
 
+        public HashSet<string> UserSkipList { get; set; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
         public bool IsGameFolder(string directoryPath, out int score)
         {
             score = 0;
@@ -49,12 +51,13 @@ namespace Monolith
 
             try
             {
-                var files = Directory.GetFiles(directoryPath);
-                var dirs = Directory.GetDirectories(directoryPath);
                 var folderName = Path.GetFileName(directoryPath.TrimEnd(Path.DirectorySeparatorChar));
 
-                // Immediate blacklist check
-                if (BlacklistFolders.Contains(folderName)) return false;
+                // Immediate blacklist check (Optimized: Check name BEFORE reading files)
+                if (BlacklistFolders.Contains(folderName) || UserSkipList.Contains(folderName)) return false;
+
+                var files = Directory.GetFiles(directoryPath);
+                var dirs = Directory.GetDirectories(directoryPath);
 
                 // 1. Check Root Files
                 score += ScoreFiles(files, folderName);
@@ -147,24 +150,24 @@ namespace Monolith
 
             var folderName = Path.GetFileName(directoryPath.TrimEnd(Path.DirectorySeparatorChar));
             
-            // Recursive search for executables to find games like Cyberpunk (bin/x64/Cyberpunk2077.exe)
-            // or CS2 (game/bin/win64/cs2.exe)
             List<string> exes = new List<string>();
             try
             {
-                exes = Directory.GetFiles(directoryPath, "*.exe", SearchOption.AllDirectories).ToList();
+                // Recursive search with depth limit (max 3 levels) to avoid performance issues
+                exes = GetFilesRecursive(directoryPath, "*.exe", 3);
             }
             catch 
             {
-                // Should we try non-recursive if recursive fails? 
-                // Usually fails due to AccessDenied on some protected subfolder.
-                // Fallback to top directory
+                // Fallback to top directory if recursive fails
                 try { exes = Directory.GetFiles(directoryPath, "*.exe", SearchOption.TopDirectoryOnly).ToList(); } catch { }
             }
 
             var candidates = exes
                 .Select(path => new FileInfo(path))
-                .Where(fi => !BlacklistExes.Contains(fi.Name) && !fi.Name.StartsWith("unins", StringComparison.OrdinalIgnoreCase))
+                .Where(fi => !BlacklistExes.Contains(fi.Name) && 
+                             !UserSkipList.Contains(fi.Name) &&
+                             !UserSkipList.Contains(fi.Extension) &&
+                             !fi.Name.StartsWith("unins", StringComparison.OrdinalIgnoreCase))
                 .ToList();
 
             if (!candidates.Any()) return null;
@@ -220,6 +223,30 @@ namespace Monolith
                 }
             }
             return d[n, m];
+        }
+
+        private List<string> GetFilesRecursive(string path, string searchPattern, int maxDepth)
+        {
+            var results = new List<string>();
+            if (maxDepth < 0) return results;
+
+            try
+            {
+                results.AddRange(Directory.GetFiles(path, searchPattern, SearchOption.TopDirectoryOnly));
+                
+                if (maxDepth > 0)
+                {
+                    foreach (var dir in Directory.GetDirectories(path))
+                    {
+                        // Avoid system or hidden folders if possible, but for simplicity just recurse
+                        results.AddRange(GetFilesRecursive(dir, searchPattern, maxDepth - 1));
+                    }
+                }
+            }
+            catch (UnauthorizedAccessException) { }
+            catch (DirectoryNotFoundException) { }
+            
+            return results;
         }
     }
 }
